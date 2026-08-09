@@ -1,0 +1,189 @@
+{
+  "name": "Instance 3",
+  "jobs": [
+    {
+      "job_id": 1,
+      "process_types": [
+        "Boiling",
+        "Baking",
+        "Smoking"
+      ],
+      "processing_times": [
+        2.0,
+        1.0,
+        1.5
+      ],
+      "splitting_timing": 2,
+      "due_time": 5.0
+    },
+    {
+      "job_id": 2,
+      "process_types": [
+        "Boiling",
+        "Baking",
+        "Boiling"
+      ],
+      "processing_times": [
+        1.6,
+        1.4,
+        2.0
+      ],
+      "splitting_timing": 2,
+      "due_time": 5.0
+    },
+    {
+      "job_id": 3,
+      "process_types": [
+        "Boiling",
+        "Baking",
+        "Boiling",
+        "Baking",
+        "Boiling"
+      ],
+      "processing_times": [
+        3.0,
+        0.8,
+        1.1,
+        0.3,
+        1.2
+      ],
+      "splitting_timing": 1,
+      "due_time": 5.0
+    },
+    {
+      "job_id": 4,
+      "process_types": [
+        "Smoking",
+        "Boiling",
+        "Baking",
+        "Smoking",
+        "Boiling"
+      ],
+      "processing_times": [
+        0.3,
+        1.2,
+        1.0,
+        0.5,
+        0.6
+      ],
+      "splitting_timing": 4,
+      "due_time": 5.0
+    },
+    {
+      "job_id": 5,
+      "process_types": [
+        "Boiling",
+        "Baking",
+        "Boiling"
+      ],
+      "processing_times": [
+        1.2,
+        0.7,
+        1.8
+      ],
+      "splitting_timing": 1,
+      "due_time": 5.0
+    },
+    {
+      "job_id": 6,
+      "process_types": [
+        "Boiling"
+      ],
+      "processing_times": [
+        3.3
+      ],
+      "splitting_timing": 0,
+      "due_time": 5.0
+    },
+    {
+      "job_id": 7,
+      "process_types": [
+        "Baking",
+        "Smoking"
+      ],
+      "processing_times": [
+        1.7,
+        1.5
+      ],
+      "splitting_timing": 1,
+      "due_time": 10.0
+    },
+    {
+      "job_id": 8,
+      "process_types": [
+        "Baking"
+      ],
+      "processing_times": [
+        1.3
+      ],
+      "splitting_timing": 0,
+      "due_time": 10.0
+    },
+    {
+      "job_id": 9,
+      "process_types": [
+        "Boiling",
+        "Baking",
+        "Boiling"
+      ],
+      "processing_times": [
+        0.8,
+        1.0,
+        2.2
+      ],
+      "splitting_timing": 2,
+      "due_time": 10.0
+    },
+    {
+      "job_id": 10,
+      "process_types": [
+        "Baking",
+        "Smoking",
+        "Boiling",
+        "Baking",
+        "Smoking"
+      ],
+      "processing_times": [
+        0.6,
+        1.3,
+        0.7,
+        0.2,
+        1.1
+      ],
+      "splitting_timing": 3,
+      "due_time": 10.0
+    }
+  ],
+  "machines": [
+    {
+      "id": 1,
+      "capabilities": [
+        "Boiling"
+      ]
+    },
+    {
+      "id": 2,
+      "capabilities": [
+        "All"
+      ]
+    },
+    {
+      "id": 3,
+      "capabilities": [
+        "All"
+      ]
+    },
+    {
+      "id": 4,
+      "capabilities": [
+        "All"
+      ]
+    },
+    {
+      "id": 5,
+      "capabilities": [
+        "All"
+      ]
+    }
+  ]
+}

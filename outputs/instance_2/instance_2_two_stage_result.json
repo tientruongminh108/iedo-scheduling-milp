@@ -1,0 +1,129 @@
+{
+    "instance_name": "Instance 2",
+    "approach": "two_stage",
+    "status": "FEASIBLE",
+    "makespan": 7.700000000000015,
+    "tardy_jobs": 0,
+    "solver_time_ms": 1504211,
+    "schedule": [
+        {
+            "job_id": 1,
+            "piece": 1,
+            "machine_id": 1,
+            "start": 3.500000000000014,
+            "duration": 2.7
+        },
+        {
+            "job_id": 1,
+            "piece": 2,
+            "machine_id": 3,
+            "start": 6.200000000000015,
+            "duration": 1.5
+        },
+        {
+            "job_id": 2,
+            "piece": 1,
+            "machine_id": 4,
+            "start": 0.0,
+            "duration": 3.9
+        },
+        {
+            "job_id": 3,
+            "piece": 1,
+            "machine_id": 3,
+            "start": 0.0,
+            "duration": 3.7
+        },
+        {
+            "job_id": 4,
+            "piece": 1,
+            "machine_id": 5,
+            "start": 8.881784197001252e-16,
+            "duration": 2.8
+        },
+        {
+            "job_id": 4,
+            "piece": 2,
+            "machine_id": 4,
+            "start": 3.8999999999999857,
+            "duration": 0.8
+        },
+        {
+            "job_id": 5,
+            "piece": 1,
+            "machine_id": 1,
+            "start": 4.218847493575595e-15,
+            "duration": 0.8
+        },
+        {
+            "job_id": 5,
+            "piece": 2,
+            "machine_id": 2,
+            "start": 1.399999999999999,
+            "duration": 1.9
+        },
+        {
+            "job_id": 6,
+            "piece": 1,
+            "machine_id": 1,
+            "start": 0.800000000000014,
+            "duration": 2.7
+        },
+        {
+            "job_id": 7,
+            "piece": 1,
+            "machine_id": 2,
+            "start": 0.0,
+            "duration": 1.4
+        },
+        {
+            "job_id": 7,
+            "piece": 2,
+            "machine_id": 5,
+            "start": 3.5,
+            "duration": 1.5
+        },
+        {
+            "job_id": 8,
+            "piece": 1,
+            "machine_id": 4,
+            "start": 4.699999999999974,
+            "duration": 2.2
+        },
+        {
+            "job_id": 9,
+            "piece": 1,
+            "machine_id": 5,
+            "start": 4.999999999999986,
+            "duration": 0.8
+        },
+        {
+            "job_id": 9,
+            "piece": 2,
+            "machine_id": 5,
+            "start": 5.799999999999986,
+            "duration": 1.8
+        },
+        {
+            "job_id": 10,
+            "piece": 1,
+            "machine_id": 2,
+            "start": 3.300000000000015,
+            "duration": 4.4
+        },
+        {
+            "job_id": 11,
+            "piece": 1,
+            "machine_id": 3,
+            "start": 3.7000000000000153,
+            "duration": 2.5
+        },
+        {
+            "job_id": 11,
+            "piece": 2,
+            "machine_id": 1,
+            "start": 6.200000000000015,
+            "duration": 1.5
+        }
+    ]
+}

@@ -1,0 +1,16 @@
+# Byte-compiled / Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment
+.venv/
+venv/
+
+# IDE / Editor config
+.vscode/
+.idea/
+*.swp
+
+# Ignore Excel temporary lock files
+~$*.xlsx
