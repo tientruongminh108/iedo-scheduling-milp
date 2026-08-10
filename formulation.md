@@ -17,7 +17,7 @@
 - $F_i^m \in \{0,1\}$, for $i \in I, m \in M^I$: 1 if limited machine $m$ can process every process type in job $i$'s **full**, unsplit set of processes
 - $N_1, N_2, N_3$: sufficiently large positive numbers (Big-M constants; see derivation below)
 
-> **Why not just one fixed $P_{is}$ and $C_{is}$ per phase, as in a simpler write-up?** Because splitting is a *decision*, not a given: whether piece 1 has duration $P_i^{pre}$ or $P_i^{full}$, and whether a limited machine is eligible for piece 1 at all, both depend on whether the job actually ends up split. The parameters above ($B_i^m$, $F_i^m$, $G_i^m$, $P_i^{pre}$, $P_i^{post}$, $P_i^{full}$) are fixed data computed from the instance, but they are combined with the **decision variable** $\delta_i$ below rather than collapsed into a single fixed $P_{is}$/$C_{is}$ ahead of time.
+**Why not just one fixed $P_{is}$ and $C_{is}$ per phase, as in a simpler write-up?** Because splitting is a *decision*, not a given: whether piece 1 has duration $P_i^{pre}$ or $P_i^{full}$, and whether a limited machine is eligible for piece 1 at all, both depend on whether the job actually ends up split. The parameters above ($B_i^m$, $F_i^m$, $G_i^m$, $P_i^{pre}$, $P_i^{post}$, $P_i^{full}$) are fixed data computed from the instance, but they are combined with the **decision variable** $\delta_i$ below rather than collapsed into a single fixed $P_{is}$/$C_{is}$ ahead of time.
 
 ## Decision Variables
 - $\delta_i \in \{0,1\}$, for $i \in I^{split}$: 1 if job $i$ is actually split into two pieces, 0 if it is kept as one block. (For $i \notin I^{split}$, $\delta_i$ is fixed at 0 rather than a free variable, since those jobs cannot split.)
@@ -62,9 +62,15 @@ $$ C_i \ge x_{i2} \quad \forall i \in I^{split} $$
 $C_i$ is the job's true completion time - the later of its two pieces if split, or simply $x_{i1}$ if not.
 
 ### 5. Machine Disjunctive Constraints
-For every pair of pieces $(i,s)$ and $(j,t)$ that could feasibly be assigned to the same machine $m$ ($i < j$; $s,t\in\{1,2\}$, restricted to pieces that actually exist for their job):
-$$ x_{is} + P_{jt} - x_{jt} \le N_1\big[(1 - z_{isjt}) + (2 - y_{ism} - y_{jtm})\big] $$
-$$ x_{jt} + P_{is} - x_{is} \le N_1\big[z_{isjt} + (2 - y_{ism} - y_{jtm})\big] $$
+For every pair of pieces $(i,s)$ and $(j,t)$ that could feasibly be assigned to the same machine $m$ (with $i < j$, $s, t \in \{1, 2\}$, restricted to pieces that actually exist for their job):
+
+$$
+x_{is} + P_{jt} - x_{jt} \le N_1 \left[ (1 - z_{isjt}) + (2 - y_{ism} - y_{jtm}) \right]
+$$
+
+$$
+x_{jt} + P_{is} - x_{is} \le N_1 \left[ z_{isjt} + (2 - y_{ism} - y_{jtm}) \right]
+$$
 
 where $P_{is}$ denotes the duration actually realized for piece $s$ of job $i$ under Constraint 3 (i.e. $P_i^{pre}$ or $P_i^{full}$ for $s=1$ depending on $\delta_i$; $P_i^{post}$ for $s=2$). Pairs where $i = j$ (the two pieces of the *same* job) are excluded - their relative order is already fixed by Constraint 3, and forcing them apart would incorrectly forbid scheduling both pieces on the same machine.
 
@@ -94,5 +100,4 @@ A simple, always-valid (if loose) choice, using the instance's total workload $\
 
 $$ N_1 \ge \Pi \qquad N_2 \ge \Pi \qquad N_3 \ge \Pi $$
 
-> **Note on Machine-Specific Big-M Tightening:**
-> Bounding $N_1$ locally per machine/piece (e.g., using maximum workload of eligible pieces per machine) reduces solver search space for limited machines (such as Machine 1). While empirically valid for tested instances, this tightening assumes piece completion times do not exceed independent machine workloads. For guaranteed theoretical validity across arbitrary precedence delays, the global bound $N = \Pi$ remains the strictly proven baseline.
+**Note on Machine-Specific Big-M Tightening:** Bounding $N_1$ locally per machine/piece (e.g., using maximum workload of eligible pieces per machine) reduces solver search space for limited machines (such as Machine 1). While empirically valid for tested instances, this tightening assumes piece completion times do not exceed independent machine workloads. For guaranteed theoretical validity across arbitrary precedence delays, the global bound $N = \Pi$ remains the strictly proven baseline.
