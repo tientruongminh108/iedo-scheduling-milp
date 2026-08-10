@@ -17,7 +17,7 @@
 - $F_i^m \in \{0,1\}$, for $i \in I, m \in M^I$: 1 if limited machine $m$ can process every process type in job $i$'s **full**, unsplit set of processes
 - $N_1, N_2, N_3$: sufficiently large positive numbers (Big-M constants; see derivation below)
 
-**Why not just one fixed $P_{is}$ and $C_{is}$ per phase, as in a simpler write-up?** Because splitting is a *decision*, not a given: whether piece 1 has duration $P_i^{pre}$ or $P_i^{full}$, and whether a limited machine is eligible for piece 1 at all, both depend on whether the job actually ends up split. The parameters above ($B_i^m$, $F_i^m$, $G_i^m$, $P_i^{pre}$, $P_i^{post}$, $P_i^{full}$) are fixed data computed from the instance, but they are combined with the **decision variable** $\delta_i$ below rather than collapsed into a single fixed $P_{is}$/$C_{i\_s}$ ahead of time.
+**Why not just one fixed $P_{is}$ and $C_{is}$ per phase, as in a simpler write-up?** Because splitting is a *decision*, not a given: whether piece 1 has duration $P_i^{pre}$ or $P_i^{full}$, and whether a limited machine is eligible for piece 1 at all, both depend on whether the job actually ends up split. The parameters above ($B_i^m$, $F_i^m$, $G_i^m$, $P_i^{pre}$, $P_i^{post}$, $P_i^{full}$) are fixed data computed from the instance, but they are combined with the **decision variable** $\delta_i$ below rather than collapsed into a single fixed $P_{is}/C_{is}$ ahead of time.
 
 ## Decision Variables
 - $\delta_i \in \{0,1\}$, for $i \in I^{split}$: 1 if job $i$ is actually split into two pieces, 0 if it is kept as one block. (For $i \notin I^{split}$, $\delta_i$ is fixed at 0 rather than a free variable, since those jobs cannot split.)
