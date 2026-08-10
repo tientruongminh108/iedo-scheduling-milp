@@ -1,8 +1,10 @@
 # Multi-Objective Scheduling Optimization for Food Manufacturing
 
-This project builds a Mixed-Integer Programming (MIP) model to solve a multi-objective scheduling problem for a food manufacturer.
+This project builds an optimization model to solve a multi-objective scheduling problem for a food manufacturer.
 
-Each day, a set of jobs must be processed at a station with several machines. Each job consists of a sequence of processing steps that must be completed in order, and some machines are only capable of certain step types. To make better use of limited machine capacity, some jobs may optionally be split into two pieces at a predetermined point, so that the two pieces can be scheduled on two different machines.
+Each morning, the IEDO company's smoking station must schedule a set of jobs across five machines. Each job is a fixed sequence of processing (boiling, baking, and/or smoking) that must be completed in order, and machine 1 - the oldest machine - can only perform boiling, while machines 2-5 can perform any of those processes. To make better use of machine 1's limited capacity, a job may optionally be split into two pieces at its own predetermined splitting timing, so the two pieces can run on two different machines.
+
+The two objectives are lexicographically prioritized: first minimize the number of tardy jobs, then - among schedules that are already tied on tardiness - minimize the makespan. This project formulates this problem as two-stage optimization model and solves it two ways, comparing a MILP against a CP-SAT formulation.
 
 ## Problem Formulation
 ### Decision Variables
@@ -33,26 +35,24 @@ The first objective always takes priority over the second: a schedule with fewer
 - **Tardiness definition** - the tardy variable for a job is `1` if its completion time is after its due time, and `0` otherwise.
 
 ### Solving Strategy (Multi-Objective Handling)
-To strictly enforce the lexicographic priority of our two objectives (minimizing tardy jobs first, then makespan), this project implements and compares two solution approaches:
+To strictly enforce the lexicographic priority of two objectives (minimizing tardy jobs first, then makespan):
+- **Stage 1**: Solve for the primary objective only - minimize the total number of tardy jobs.
+- **Stage 2**: Add the optimal tardy count from Stage 1 as a hard constraint, then resolve to minimize the makespan.
 
-1. **Two-Stage Approach (As prescribed in the case study):**
-   - **Stage 1:** The model optimizes solely for the primary objective: minimizing the total number of tardy jobs.
-   - **Stage 2:** The optimal number of tardy jobs found in Stage 1 (let's call it $t$) is added to the model as a strict constraint. The model is then run a second time to minimize the makespan.
+This two-stage procedure is implemented with two different solvers, so the same formulation can be compared head-to-head:
+1. **MILP (`src/model.py`)**: Sequencing on each machine is enforced with classic disjunctive Big-M constraints - for every pair of jobs/pieces that could share a machine, a binary ordering variable and a big-M term force one to fully precede the other whenever both are assigned to that machine.
+2. **CP-SAT (`src/model_cpsat.py)**: The same decision structure (assignment, splitting, timing, tardiness) is re-expressed using CP-SAT's natuve optinal-interval variables and a no-overlap constraint per machine, which removes the need for Big-M sequencing terms entirely.
 
-2. **Weighted Sum Approach (Single-Stage with Appropriate Positive $M$):**
-   - Combined both objectives into a single objective function: `Minimize: M * (Total Tardy Jobs) + Makespan`.
-   - To guarantee that reducing tardy jobs always outweighs reducing the makespan, the weight $M$ is introduced. This acts as a sufficiently large penalty that prevents the solver from trading a tardy job for a shorter makespan.
-
-Both approaches are implemented, and their computation times and solver efficiency are compared.
+Both are exact formulations of the same problem - on instances where both solvers converge, they agree on the optimal makespan and tardy count. CP-SAT tends to converge faster and closes the optimality gap sooner on the harder instances (see `outputs/approach_comparison.md` for measured results), which is why it is used as the default point of comparision against the MILP model.
 
 ### Notes and Assumptions
 - A job may be split into **at most two pieces**, and only at its own predetermined splitting timing.
 - A waiting gap between the two pieces of a split job is allowed, even when both pieces run on the same machine.
-- Big-M for disjunctive/timing constraints is bounded by the total processing time of all steps across all jobs.
+- Big-M for disjunctive/timing constraints (MILP) is bounded by the total processing time of all steps across all jobs.
 - The formulation is meant to stay general so it can be reused for future.
 
 ### Big-M Tightening Analysis and Limitations
-
+*(Applies to the MILP in `src/model.py`)*
 #### 1. Findings and Performance
 * **Machine Workload Impact:** Tightening Big-M using `machine_workload` primarily bounds Machine 1. Since Machines 2-5 have `All` capability, their eligible processing workload equals almost the entire system workload. Consequently, Big-M values for Machines 2-5 remain virtually identical to the un-tightened baseline, explaining why runtime speedup was marginal in benchmarks.
 * **Empirical Validation:** Cross-checking the optimal 8.0h schedule against `piece_ub` in the tightened model showed **zero violations** (`Violations: False`). On this test instance, tightening did not cut off any optimal solution.
@@ -70,6 +70,7 @@ Both approaches are implemented, and their computation times and solver efficien
 │  ├─ __init__.py
 │  ├─ main.py      # parse -> read -> solve -> write
 │  ├─ model.py         # MILP model
+│  ├─ model_cpsat.py   # CP-SAT model
 │  ├─ utils.py
 │  ├─ instance.py
 │  └─ vis.py
@@ -84,10 +85,10 @@ Both approaches are implemented, and their computation times and solver efficien
 │
 ├─ outputs/
 │  ├─ instance_1/
-│  │  ├─ instance_1_two_stage_result.json
-│  │  ├─ instance_1_weighted_sum_result.json
-│  │  ├─ instance_1_gantt_two_stage.png
-│  │  └─ instance_1_gantt_weighted_sum.png
+│  │  ├─ instance_1_milp_result.json
+│  │  ├─ instance_1_cpsat_result.json
+│  │  ├─ instance_1_gantt_milp.png
+│  │  └─ instance_1_gantt_cpsat.png
 │  ├─ instance_2/
 │  │  └─ ...
 │  └─ approach_comparison.md

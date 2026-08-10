@@ -10,12 +10,14 @@ import argparse
 from pathlib import Path
 from src.instance import parse_workbook, load_cached_instances, cache_instances
 from src.model import solve_instance as solve_milp_model
+from src.model_cpsat import solve_cpsat
 from src.utils import write_output, generate_comparison_table
 from src.vis import plot_gantt_chart
 
 
 OUTPUT_DIR = Path("outputs")
 TIME_LIMIT = 1500000
+CPSAT_TIME_LIMIT = 300000
 
 
 def run(input_file: str, skip_parse: bool = False):
@@ -30,7 +32,7 @@ def run(input_file: str, skip_parse: bool = False):
         instances = load_cached_instances(Path('data/processed'))
     
     # Results storage for comparison tables
-    milp_results = {"two_stage": [], "weighted_sum": []}
+    results = {"milp": [], "cpsat": []}
 
     for inst in instances:
         print(f"Solving {inst.name} ...")
@@ -40,28 +42,26 @@ def run(input_file: str, skip_parse: bool = False):
         instance_dir = OUTPUT_DIR / instance_slug
         instance_dir.mkdir(parents=True, exist_ok=True)
         
-        all_results = solve_milp_model(inst, approach="both", time_limit_ms=TIME_LIMIT)
-        
-        ts_res = all_results["two_stage"]
-        ws_res = all_results["weighted_sum"]
-        
-        ts_res["instance_name"] = inst.name
-        ws_res["instance_name"] = inst.name
-        
-        milp_results["two_stage"].append(ts_res)
-        milp_results["weighted_sum"].append(ws_res)
-        
+        milp_res = solve_milp_model(inst, time_limit_ms=TIME_LIMIT)
+        cpsat_res = solve_cpsat(inst, time_limit_ms=CPSAT_TIME_LIMIT)
+
+        milp_res["instance_name"] = inst.name
+        cpsat_res["instance_name"] = inst.name
+
+        results["milp"].append(milp_res)
+        results["cpsat"].append(cpsat_res)
+
         # Write Output JSONs
-        write_output(instance_slug, "two_stage", ts_res, instance_dir)
-        write_output(instance_slug, "weighted_sum", ws_res, instance_dir)
-        
+        write_output(instance_slug, "milp", milp_res, instance_dir)
+        write_output(instance_slug, "cpsat", cpsat_res, instance_dir)
+
         # Plot Gantt Charts
-        gantt_ts_path = instance_dir / f"{instance_slug}_gantt_two_stage.png"
-        plot_gantt_chart(inst.name + " (Two-Stage MILP)", ts_res.get("schedule", []), gantt_ts_path)
-        
-        gantt_ws_path = instance_dir / f"{instance_slug}_gantt_weighted_sum.png"
-        plot_gantt_chart(inst.name + " (Weighted-Sum MILP)", ws_res.get("schedule", []), gantt_ws_path)
-        
+        gantt_milp_path = instance_dir / f"{instance_slug}_gantt_milp.png"
+        plot_gantt_chart(inst.name + " (MILP - SCIP)", milp_res.get("schedule", []), gantt_milp_path)
+
+        gantt_cpsat_path = instance_dir / f"{instance_slug}_gantt_cpsat.png"
+        plot_gantt_chart(inst.name + " (CP-SAT)", cpsat_res.get("schedule", []), gantt_cpsat_path)
+
         print(f"Completed {inst.name}")
 
     # Export Summary Comparison Table
@@ -69,8 +69,8 @@ def run(input_file: str, skip_parse: bool = False):
     # comparison table
     generate_comparison_table(
         approaches=[
-            ("Two-Stage MILP", milp_results["two_stage"]),
-            ("Weighted-Sum MILP", milp_results["weighted_sum"]),
+            ("MILP (SCIP)", results["milp"]),
+            ("CP-SAT", results["cpsat"]),
         ],
         output_dir=OUTPUT_DIR,
     )

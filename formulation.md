@@ -1,7 +1,5 @@
 # Formal Formulation for IEDO Scheduling Problem
 
-# 1. Two-Stage approach
-
 ## Sets and Parameters
 - $I$: set of jobs, indexed by $i, j \in I$
 - $M$: set of machines, indexed by $m \in M$
@@ -98,15 +96,3 @@ $$ N_1 \ge \Pi \qquad N_2 \ge \Pi \qquad N_3 \ge \Pi $$
 
 > **Note on Machine-Specific Big-M Tightening:**
 > Bounding $N_1$ locally per machine/piece (e.g., using maximum workload of eligible pieces per machine) reduces solver search space for limited machines (such as Machine 1). While empirically valid for tested instances, this tightening assumes piece completion times do not exceed independent machine workloads. For guaranteed theoretical validity across arbitrary precedence delays, the global bound $N = \Pi$ remains the strictly proven baseline.
-
-# 2. Single-Stage (Weighted-Sum) approach
-This approach uses the same sets, parameters, and decision variables as the Two-Stage approach, minimizing both objectives at once via a weighted sum instead of solving sequentially.
-
-**Objective Function:**
-$$ \text{Minimize } Z = W \sum_{i \in I} e_i + w $$
-
-where $W$ is a large positive number, strictly greater than the maximum possible value of $w$ (e.g. $W = N_1 + 1$, using the $N_1$ bound above, since $N_1$ is also a valid upper bound on the makespan). This guarantees the model never trades a tardy job for a shorter makespan - the two objectives stay strictly lexicographic even though they are combined into one function.
-
-**Subject to:**
-- Constraints 1-6 above
-- $$ w \ge C_i \quad \forall i \in I, \qquad w \ge 0 $$
